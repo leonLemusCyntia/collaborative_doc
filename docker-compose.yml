@@ -1,0 +1,49 @@
+name: CollaborativeDoc
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: collab
+    expose:
+      - 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_started
+    volumes:
+      - .:/backend
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=collab
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./backend
+          target: /src/backend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/backend
+    depends_on:
+      - backend
+  adminer:
+    image: adminer
+    ports:
+     - 8080:8080
+volumes:
+  db_data:
