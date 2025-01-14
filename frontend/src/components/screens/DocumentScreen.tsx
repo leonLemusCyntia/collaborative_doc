@@ -6,7 +6,7 @@ import { getDocumentContent, updateDocumentContent } from '../utils/document-cal
 
 function DocumentScreen() {
     const { documentId } = useParams();
-    const {docs, setDocs, ws} =  useGetDocuments("1");
+    const {docs, setDocs, ws} =  useGetDocuments(documentId ?? '');
 
     useEffect(() => {
         if(localStorage.getItem('access_token') === null){                   
@@ -14,7 +14,7 @@ function DocumentScreen() {
         }
         else {
             console.log("here is de document "  + documentId);
-            getDocumentContent(setDocs, "1");
+            getDocumentContent(setDocs, documentId ?? '');
         };
      }, []);
 
@@ -26,7 +26,7 @@ function DocumentScreen() {
             <textarea 
             className={"first"}
             value={docs?.content}
-            onChange={e => updateDocumentContent(ws, "1", docs?.title ?? '', e.target.value)}
+            onChange={e => updateDocumentContent(ws, documentId ?? '', docs?.title ?? '', e.target.value)}
             rows={10} 
             cols={50}
             wrap="off"

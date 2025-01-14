@@ -1,53 +1,62 @@
-import { Container, Row, Col } from 'react-bootstrap';
-import { SetStateAction, useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useGetDocuments } from '../hooks/document-socket';
-import { DocType, getDocumentContent, updateDocumentContent } from '../utils/document-calls';
-import axios from "axios";
+import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import { useEffect, useState } from "react";
+import { Link, } from 'react-router-dom';
+import { DocType, getDocumentsList, createDocumentContent } from '../utils/document-calls';
 
-const Item = (doc: DocType ) => {
-  return <li>{doc.id}</li>
-}
 
 function HomeScreen() {
-    const [docs, setDocs] = useState<DocType[]>([]);
-    const items = [];
+    const [docs, setDocs] = useState<DocType[]>();
+    const [title, setTitle] = useState("")
 
     useEffect(() => {
         if(localStorage.getItem('access_token') === null){                   
           window.location.href = '/login'
         }
         else {
-          const headers = {
-            'Content-Type' : 'application/json',
-            'Accept' : 'application/json',
-            'Authorization' : 'Bearer ' + localStorage.getItem('access_token')
-          }
-          axios.get(`http://localhost:8000/documents/`, { headers })
-            .then((response: { data: SetStateAction<DocType[]>; }) => {
-              setDocs(response.data);
-          })
+          getDocumentsList(setDocs);
         };
      }, []);
 
+    const submitCreateDoc = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      createDocumentContent(title, setDocs);
+      setTitle('');
+    }
+
     return (
-        <>
-        <Container>
+      <>
+      <Container>
         <div>
           <ul>
-            {docs.map((doc) => {
+            {docs?.map((doc) => {
               const url = `/document/${doc.id}`;
-              return <li><Link to={url}>{doc.title}</Link></li>
+              return <li key={doc.id}><Link to={url}>{doc.title}</Link></li>
             }
-                
             )}
           </ul>
+          <br/>
+          <Form onSubmit={submitCreateDoc}>
+              <Form.Group className="mb-3" controlId="title">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control 
+                      type="text" 
+                      placeholder="Add title" 
+                      value={title} 
+                      onChange={(e) => setTitle(e.target.value)} 
+                      required
+                  />
+              </Form.Group>
+              <br />
+              <div>
+                  <Button type='submit'> Create doc </Button>
+              </div>  
+          </Form>
           <Row>
             <Col>Not register? <Link to="/login"> login </Link></Col>
           </Row>    
         </div>
-        </Container>
-        </>
+      </Container>
+      </>
     )
 }
 

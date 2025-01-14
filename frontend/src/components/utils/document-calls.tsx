@@ -7,8 +7,7 @@ export type DocType = {
 }
 
 export function getDocumentsList(
-    setDocs: React.Dispatch<React.SetStateAction<DocType | undefined>>,
-    documentId: string
+    setDocs: React.Dispatch<React.SetStateAction<DocType[] | undefined>>,
 ) {
     const headers = {
         'Content-Type' : 'application/json',
@@ -55,6 +54,25 @@ export function updateDocumentContent(
       .then((_) => {
     ws?.send(documentId)
   });
+}
+
+export function createDocumentContent(
+  title: string,
+  setDocs: React.Dispatch<React.SetStateAction<DocType[] | undefined>>,
+) {
+  const url = 'http://localhost:8000/documents/'
+  axios.post(url, {
+      title: title,
+      content: "dfds",
+    },
+    {
+      headers: {
+        Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+      },
+    })
+    .then((_) => {
+      getDocumentsList(setDocs);
+  })
 }
 
 

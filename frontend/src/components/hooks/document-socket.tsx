@@ -4,7 +4,7 @@ import { DocType } from "../utils/document-calls";
 
 type DocumentCollaborationProps = {
     documentId?: string,
-    updateCallback: (documentId: number) => void,
+    updateCallback: (documentId: string) => void,
 }
 
 export function useDocumentsEvents({
@@ -31,7 +31,7 @@ export function useDocumentsEvents({
         return ws;
       }
       ws.onmessage = (event) => {
-        updateCallback(1);
+        updateCallback(documentId ?? '');
       };
     }, [ws]);
 
