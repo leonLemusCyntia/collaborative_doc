@@ -1,9 +1,6 @@
 import axios from "axios";
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import  { useDispatch, useSelector } from 'react-redux';
-import Loader from '../Loader';
 import Message from '../Message';
  
 
@@ -114,7 +111,7 @@ function SignupScreen() {
                             />
                         </Form.Group>
                         <div>
-                            <Button type='submit'> Signup</Button>
+                            <Button type='submit'> Sign up</Button>
                         </div>
                     </Form>
                 </Card.Body>

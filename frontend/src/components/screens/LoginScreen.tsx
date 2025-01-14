@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
 import axios from "axios";
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import  { useDispatch, useSelector } from 'react-redux';
-import Loader from '../Loader';
+import { Link } from 'react-router-dom';
 import Message from '../Message';
 
 function LoginScreen() {
@@ -71,7 +69,7 @@ function LoginScreen() {
                         </Form>
                         <Row>
                             <Col>
-                                Not register? <Link to="/signup"> Sing up </Link>
+                                Not register? <Link to="/signup"> Sign up </Link>
                             </Col>
                         </Row>
                     </Card.Body>

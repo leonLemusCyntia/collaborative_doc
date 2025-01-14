@@ -1,6 +1,7 @@
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import { useEffect, useState } from "react";
 import { Link, } from 'react-router-dom';
+import axios from "axios";
 import { DocType, getDocumentsList, createDocumentContent } from '../utils/document-calls';
 
 
@@ -13,6 +14,24 @@ function HomeScreen() {
           window.location.href = '/login'
         }
         else {
+          const fetchData = async () => {
+            const {data} =  await axios.post('http://localhost:8000/api/token/refresh/', {
+              refresh: localStorage.getItem('refresh_token')
+              }, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept' : 'application/json',
+                  'Authorization' : 'Bearer ' + localStorage.getItem('access_token')
+                },
+              },
+            );
+            axios.defaults.headers.common['Authorization'] = `Bearer ${data['access']}`;
+            localStorage.setItem('access_token', data.access);
+          }
+          // call the function
+          fetchData()
+            // make sure to catch any error
+            .catch(console.error);
           getDocumentsList(setDocs);
         };
      }, []);
@@ -27,6 +46,7 @@ function HomeScreen() {
       <>
       <Container>
         <div>
+          <h2>Documents list </h2>
           <ul>
             {docs?.map((doc) => {
               const url = `/document/${doc.id}`;
@@ -35,6 +55,7 @@ function HomeScreen() {
             )}
           </ul>
           <br/>
+          <h2>Create new document</h2>
           <Form onSubmit={submitCreateDoc}>
               <Form.Group className="mb-3" controlId="title">
                   <Form.Label>Title</Form.Label>

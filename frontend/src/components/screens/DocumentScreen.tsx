@@ -22,7 +22,7 @@ function DocumentScreen() {
         <>
         <Container>
         <div>
-            <p>{docs?.content}</p>
+            <p>{docs?.title}</p>
             <textarea 
             className={"first"}
             value={docs?.content}

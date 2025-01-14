@@ -63,7 +63,7 @@ export function createDocumentContent(
   const url = 'http://localhost:8000/documents/'
   axios.post(url, {
       title: title,
-      content: "dfds",
+      content: title,
     },
     {
       headers: {

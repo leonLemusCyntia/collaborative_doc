@@ -8,7 +8,7 @@ from .serializers import DocumentSerializer
 
 
 @api_view(['GET'])
-def send_some_data(request):
+def test_backend(request):
     return Response({
         "data": "Hello from django backend"
     })
