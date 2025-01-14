@@ -17,10 +17,9 @@ function LoginScreen() {
             username: uname,
             password: pass1,
         }
-        const {data} = await  axios.post('http://localhost:8000/api/token/',
-            user,{
+        const {data} = await axios.post('http://localhost:8000/api/token/',
+            user, {
                 headers: {'Content-Type': 'application/json'},
-                
             },
         );
         localStorage.clear();

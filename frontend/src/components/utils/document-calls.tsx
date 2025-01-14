@@ -1,7 +1,24 @@
 import axios from "axios";
 
 export type DocType = {
+    id: string,
+    title: string,
     content?:string
+}
+
+export function getDocumentsList(
+    setDocs: React.Dispatch<React.SetStateAction<DocType | undefined>>,
+    documentId: string
+) {
+    const headers = {
+        'Content-Type' : 'application/json',
+        'Accept' : 'application/json',
+        'Authorization' : 'Bearer ' + localStorage.getItem('access_token')
+    }
+    axios.get(`http://localhost:8000/documents/`, { headers })
+      .then((response) => {
+        setDocs(response.data);
+    })
 }
 
 export function getDocumentContent(
@@ -22,16 +39,12 @@ export function getDocumentContent(
 export function updateDocumentContent(
     ws: WebSocket | null,
     documentId: string,
+    title: string,
     content: string,
 ) {
-    const headers = {
-        'Content-Type' : 'application/json',
-        'Accept' : 'application/json',
-        'Authorization' : 'Bearer ' + localStorage.getItem('access_token'),
-        'content': content,
-    }
-    axios
-    .put('http://localhost:8000/documents/1/', {
+    const url = 'http://localhost:8000/documents/' + documentId + '/'
+    axios.put(url, {
+        title: title,
         content: content,
       },
       {
@@ -39,9 +52,9 @@ export function updateDocumentContent(
           Authorization: 'Bearer ' + localStorage.getItem('access_token'),
         },
       })
-    .then((_) => {
-      ws?.send(documentId)
-    });
+      .then((_) => {
+    ws?.send(documentId)
+  });
 }
 
 

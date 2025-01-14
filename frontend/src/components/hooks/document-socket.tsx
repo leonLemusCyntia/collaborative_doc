@@ -3,7 +3,7 @@ import axios from "axios";
 import { DocType } from "../utils/document-calls";
 
 type DocumentCollaborationProps = {
-    documentId?: number,
+    documentId?: string,
     updateCallback: (documentId: number) => void,
 }
 
@@ -42,7 +42,7 @@ export function useDocumentsEvents({
       }, [ws]);
 }
 
-export function useGetDocuments(documentId: number) {
+export function useGetDocuments(documentId: string) {
     const [docs, setDocs] = useState<DocType>();
     const {ws} = useDocumentsEvents({
         documentId: documentId,
@@ -63,8 +63,4 @@ export function useGetDocuments(documentId: number) {
           docs, setDocs, ws,
         };
       }, [docs, setDocs, ws]);
-}
-
-function getDocumentContent(setDocs: unknown, documentId: number) {
-  throw new Error("Function not implemented.");
 }

@@ -1,18 +1,32 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import { useEffect } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useGetDocuments } from '../hooks/document-socket';
-import { getDocumentContent, updateDocumentContent } from '../utils/document-calls';
+import { DocType, getDocumentContent, updateDocumentContent } from '../utils/document-calls';
+import axios from "axios";
+
+const Item = (doc: DocType ) => {
+  return <li>{doc.id}</li>
+}
 
 function HomeScreen() {
-    const {docs, setDocs, ws} =  useGetDocuments(1);
+    const [docs, setDocs] = useState<DocType[]>([]);
+    const items = [];
 
     useEffect(() => {
         if(localStorage.getItem('access_token') === null){                   
-            window.location.href = '/login'
+          window.location.href = '/login'
         }
         else {
-            getDocumentContent(setDocs, "1");
+          const headers = {
+            'Content-Type' : 'application/json',
+            'Accept' : 'application/json',
+            'Authorization' : 'Bearer ' + localStorage.getItem('access_token')
+          }
+          axios.get(`http://localhost:8000/documents/`, { headers })
+            .then((response: { data: SetStateAction<DocType[]>; }) => {
+              setDocs(response.data);
+          })
         };
      }, []);
 
@@ -20,18 +34,17 @@ function HomeScreen() {
         <>
         <Container>
         <div>
-            <p>{docs?.content}</p>
-            <textarea 
-            className={"first"}
-            value={docs?.content}
-            onChange={e => updateDocumentContent(ws, "1", e.target.value)}
-            rows={10} 
-            cols={50}
-            wrap="off"
-        />  
-        <Row>
+          <ul>
+            {docs.map((doc) => {
+              const url = `/document/${doc.id}`;
+              return <li><Link to={url}>{doc.title}</Link></li>
+            }
+                
+            )}
+          </ul>
+          <Row>
             <Col>Not register? <Link to="/login"> login </Link></Col>
-        </Row>    
+          </Row>    
         </div>
         </Container>
         </>

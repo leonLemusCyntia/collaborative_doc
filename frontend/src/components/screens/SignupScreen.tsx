@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Button, Form, Card } from 'react-bootstrap';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -16,20 +17,29 @@ function SignupScreen() {
     const [error, setError ] = useState("")
 
 
-    const submitSignup = (e: React.FormEvent<HTMLFormElement>) => {
+    const submitSignup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (pass1 != pass2) {
             setError("Password do not match");
-
-
         } else {
-            setError('');   
+            const user = {
+                username: uname,
+                email: email,
+                password: pass1,
+                first_name: fname,
+                last_name: lname,
+            }
+            const {data} = await axios.post('http://localhost:8000/register/',
+                user, {
+                    headers: {'Content-Type': 'application/json'},
+                },
+            );
+            window.location.href = '/'
         }
         console.log(fname, lname, email, pass1)
     }
 
-
-  return (
+    return (
     <>
     <Container>
         <Row>
